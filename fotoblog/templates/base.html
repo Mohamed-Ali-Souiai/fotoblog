@@ -5,6 +5,11 @@
     <title>Title</title>
 </head>
 <body>
-{% block content %}
+{% block content %}{% endblock%}
+{% if user.is_authenticated %}
+    <p>vous êtes connnecté en tant que {{request.user}}
+        <a href="{% url 'logout' %}">se déconnecter</a>
+    </p>
+{% endif %}
 </body>
 </html>
