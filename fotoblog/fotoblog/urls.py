@@ -3,6 +3,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import (
+    LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView)
 import authentication.views
 import blog.views
 
@@ -12,6 +14,10 @@ urlpatterns = [
         template_name='authentication/login.html',
         redirect_authenticated_user=True
     ), name='login_page'),
+    path('change-password/', PasswordChangeView.as_view(
+        template_name='authentication/password_change_form.html'),
+         name='password_change'
+         ),
     path('logout', authentication.views.logout_user, name='logout'),
     path('signup', authentication.views.SignupPage.as_view(), name='signup'),
     path('home', blog.views.home, name='home'),
