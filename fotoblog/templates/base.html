@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'app.css' %}">
     <title>Title</title>
 </head>
 <body>
@@ -10,7 +12,7 @@
             <h1>FotoBlog</h1>
             {% if user.is_authenticated %}
                 <p>Salut, {{ user }} !</p>
-
+                <img class="avatar" src="{% static 'images/default_profile.png'%}">
                 <p><a href="{% url 'home' %}">Accueil</a></p>
                 <p><a href="{% url 'photo_upload' %}">Téléverser une photo</a></p>
                 <p><a href="{% url 'upload_profile_photo' %}">Changer la photo de profil</a></p>
