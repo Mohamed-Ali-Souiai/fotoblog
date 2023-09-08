@@ -15,7 +15,9 @@ urlpatterns = [
     path('logout', authentication.views.logout_user, name='logout'),
     path('signup', authentication.views.SignupPage.as_view(), name='signup'),
     path('home', blog.views.home, name='home'),
-    path('photo/upload/', blog.views.PhotoUpload.as_view(), name='photo_upload')
+    path('photo/upload/', blog.views.PhotoUpload.as_view(), name='photo_upload'),
+    path('profile-photo/upload', authentication.views.UploadProfilePhoto.as_view(),
+         name='upload_profile_photo'),
 
 ]
 

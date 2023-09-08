@@ -6,7 +6,22 @@
 </head>
 <body>
 
-{% block content %}{% endblock%}
+<div class="sidebar">
+            <h1>FotoBlog</h1>
+            {% if user.is_authenticated %}
+                <p>Salut, {{ user }} !</p>
+
+                <p><a href="{% url 'home' %}">Accueil</a></p>
+                <p><a href="{% url 'photo_upload' %}">Téléverser une photo</a></p>
+                <p><a href="{% url 'upload_profile_photo' %}">Changer la photo de profil</a></p>
+                <p><a href="{% url 'logout' %}">Se déconnecter</a></p>
+            {% endif %}
+        </div>
+        <div class="main">
+            {% block content %}{% endblock content %}
+        </div>
+
+
 {% if user.is_authenticated %}
     <p>vous êtes connnecté en tant que {{request.user}}
         <a href="{% url 'logout' %}">se déconnecter</a>

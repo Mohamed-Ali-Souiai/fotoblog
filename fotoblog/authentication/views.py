@@ -6,6 +6,22 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 
 
+class UploadProfilePhoto(View):
+    form_class = forms.UploadProfilePhotoForm
+    template_name = 'authentication/upload_profile_photo.html'
+
+    def get(self, request):
+        form = self.form_class(instance=request.user)
+        return render(request, self.template_name, context={'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        return render(request, self.template_name, context={'form': form})
+
+
 class SignupPage(View):
     form_class = forms.SignupForm
     template_name = 'authentication/signup.html'
