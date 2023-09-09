@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {{ form_blog.as_p }}
+    {{ form_photo.as_p}}
+    {% csrf_token %}
+    <button type="submit">publier</button>
+</form>
+{% endblock %}

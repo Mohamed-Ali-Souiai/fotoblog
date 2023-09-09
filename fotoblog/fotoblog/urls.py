@@ -24,6 +24,8 @@ urlpatterns = [
     path('photo/upload/', blog.views.PhotoUpload.as_view(), name='photo_upload'),
     path('profile-photo/upload', authentication.views.UploadProfilePhoto.as_view(),
          name='upload_profile_photo'),
+    path('blog/create/', blog.views.BlogAndPhotoUpload.as_view(), name='create_blog'),
+    path('blog/<int:blog_id>', blog.views.view_blog, name='view_blog'),
 
 ]
 
