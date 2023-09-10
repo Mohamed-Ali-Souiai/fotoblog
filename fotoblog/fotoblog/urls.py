@@ -26,6 +26,7 @@ urlpatterns = [
          name='upload_profile_photo'),
     path('blog/create/', blog.views.BlogAndPhotoUpload.as_view(), name='create_blog'),
     path('blog/<int:blog_id>', blog.views.view_blog, name='view_blog'),
+    path('blog/<int:blog_id>/edit', blog.views.EditBlog.as_view(), name='edit_blog'),
 
 ]
 

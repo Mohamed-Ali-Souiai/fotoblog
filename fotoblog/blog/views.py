@@ -14,8 +14,8 @@ def view_blog(request, blog_id):
 
 @login_required
 def home(request):
-    photos = models.Photo.objects.all()
     blogs = models.Blog.objects.all()
+    photos = models.Photo.objects.all()
     context = {'photos': photos, 'blogs': blogs}
     return render(request, 'blog/home.html', context=context)
 
@@ -44,10 +44,46 @@ class BlogAndPhotoUpload(LoginRequiredMixin, View):
             blog = form_blog.save(commit=False)
             blog.author = request.user
             blog.photo = photo
+            blog.save()
             return redirect('home')
         context = {
             'form_blog': form_blog,
             'form_photo': form_photo
+        }
+        return render(request, self.template_name, context=context)
+
+
+class EditBlog(LoginRequiredMixin, View):
+
+    edit_form_class = forms.BlogForm
+    delete_form_class = forms.DeleteBlogForm
+    template_name = 'blog/edit_blog.html'
+
+    def get(self, request, blog_id):
+        blog = get_object_or_404(models.Blog, id=blog_id)
+        edit_form = self.edit_form_class(instance=blog)
+        delete_form = self.delete_form_class()
+        context = {
+            'edit_form': edit_form,
+            'delete_form': delete_form,
+        }
+        return render(request, self.template_name, context=context)
+
+    def post(self, request, blog_id):
+        blog = get_object_or_404(models.Blog, id=blog_id)
+        if 'edit_blog' in request.POST:
+            edit_form = self.edit_form_class(request.POST, instance=blog)
+            if edit_form.is_valid():
+                edit_form.save()
+                return redirect('home')
+            if 'delete_blog' in request.POST:
+                delete_form = self.delete_form_class(request.POST)
+                if delete_form.is_valid():
+                    blog.delete()
+                    return redirect('home')
+        context = {
+            'edit_form': edit_form,
+            'delete_form': delete_form,
         }
         return render(request, self.template_name, context=context)
 
