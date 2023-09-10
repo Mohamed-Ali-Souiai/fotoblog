@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.forms import formset_factory
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from . import forms
@@ -18,6 +19,29 @@ def home(request):
     photos = models.Photo.objects.all()
     context = {'photos': photos, 'blogs': blogs}
     return render(request, 'blog/home.html', context=context)
+
+
+class CreateMultiplePhotos(LoginRequiredMixin, View):
+    PhotoFormset = formset_factory(forms.PhotoForm, extra=3)
+    formset_class = PhotoFormset
+    template_name = 'blog/create_multiple_photos.html'
+
+    def get(self, request):
+        formset = self.formset_class()
+        context = {'formset': formset}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request):
+        formset = self.formset_class(request.POST, request.FILES)
+        if formset.is_valid():
+            for form in formset:
+                if form.cleaned_data:
+                    photo = form.save(commit=False)
+                    photo.uploader = request.user
+                    photo.save()
+            return redirect('home')
+        context = {'formset': formset}
+        return render(request, self.template_name, context=context)
 
 
 class BlogAndPhotoUpload(LoginRequiredMixin, View):
@@ -76,11 +100,11 @@ class EditBlog(LoginRequiredMixin, View):
             if edit_form.is_valid():
                 edit_form.save()
                 return redirect('home')
-            if 'delete_blog' in request.POST:
-                delete_form = self.delete_form_class(request.POST)
-                if delete_form.is_valid():
-                    blog.delete()
-                    return redirect('home')
+        if 'delete_blog' in request.POST:
+            delete_form = self.delete_form_class(request.POST)
+            if delete_form.is_valid():
+                blog.delete()
+                return redirect('home')
         context = {
             'edit_form': edit_form,
             'delete_form': delete_form,
