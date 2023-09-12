@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.forms import formset_factory
 from django.views.generic import View
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from . import forms
 from . import models
 
@@ -112,7 +112,8 @@ class EditBlog(LoginRequiredMixin, View):
         return render(request, self.template_name, context=context)
 
 
-class PhotoUpload(LoginRequiredMixin, View):
+class PhotoUpload(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = ["blog.add_photo"]
     form_class = forms.PhotoForm
     template_name = 'blog/photo_upload.html'
 

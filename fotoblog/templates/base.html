@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 {% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'app.css' %}">
+    <link rel="stylesheet" href="{% static 'app.css' %}"/>
     <title>Title</title>
 </head>
 <body>
@@ -18,7 +17,9 @@
                     <img class="avatar" src="{% static 'images/default_profile.png'%}">
                 {% endif %}
                 <p><a href="{% url 'home' %}">Accueil</a></p>
+                {% if perms.blog.add_photo %}
                 <p><a href="{% url 'photo_upload' %}">Téléverser une photo</a></p>
+                {% endif %}
                 <p><a href="{% url 'create_multiple_photos' %}">Télécharger plusieurs photos</a></p>
                 <p><a href="{% url 'upload_profile_photo' %}">Changer la photo de profil</a></p>
                 <p><a href="{% url 'create_blog' %}">Écrire un billet de blog</a></p>
