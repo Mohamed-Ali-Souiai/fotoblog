@@ -18,17 +18,18 @@ urlpatterns = [
         template_name='authentication/password_change_form.html'),
          name='password_change'
          ),
-    path('logout', authentication.views.logout_user, name='logout'),
-    path('signup', authentication.views.SignupPage.as_view(), name='signup'),
-    path('home', blog.views.home, name='home'),
+    path('logout/', authentication.views.logout_user, name='logout'),
+    path('signup/', authentication.views.SignupPage.as_view(), name='signup'),
+    path('home/', blog.views.home, name='home'),
     path('photo/upload/', blog.views.PhotoUpload.as_view(), name='photo_upload'),
-    path('profile-photo/upload', authentication.views.UploadProfilePhoto.as_view(),
+    path('profile-photo/upload/', authentication.views.UploadProfilePhoto.as_view(),
          name='upload_profile_photo'),
     path('blog/create/', blog.views.BlogAndPhotoUpload.as_view(), name='create_blog'),
-    path('blog/<int:blog_id>', blog.views.view_blog, name='view_blog'),
-    path('blog/<int:blog_id>/edit', blog.views.EditBlog.as_view(), name='edit_blog'),
+    path('blog/<int:blog_id>/', blog.views.view_blog, name='view_blog'),
+    path('blog/<int:blog_id>/edit/', blog.views.EditBlog.as_view(), name='edit_blog'),
     path('photo/upload-multiple/', blog.views.CreateMultiplePhotos.as_view(),
          name='create_multiple_photos'),
+    path('follow_users/', blog.views.FollowUsers.as_view(), name='follow_users')
 
 ]
 

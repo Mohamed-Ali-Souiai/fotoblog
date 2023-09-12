@@ -1,5 +1,5 @@
 {% load static %}
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'app.css' %}"/>
@@ -8,27 +8,28 @@
 <body>
 
 <div class="sidebar">
-            <h1>FotoBlog</h1>
-            {% if user.is_authenticated %}
-                <p>Salut, {{ user }} !</p>
-                {% if user.profile_photo %}
-                    <img class="avatar" src="{{ user.profile_photo.url }}">
-                {% else %}
-                    <img class="avatar" src="{% static 'images/default_profile.png'%}">
-                {% endif %}
-                <p><a href="{% url 'home' %}">Accueil</a></p>
-                {% if perms.blog.add_photo %}
-                <p><a href="{% url 'photo_upload' %}">Téléverser une photo</a></p>
-                {% endif %}
-                <p><a href="{% url 'create_multiple_photos' %}">Télécharger plusieurs photos</a></p>
-                <p><a href="{% url 'upload_profile_photo' %}">Changer la photo de profil</a></p>
-                <p><a href="{% url 'create_blog' %}">Écrire un billet de blog</a></p>
-                <p><a href="{% url 'logout' %}">Se déconnecter</a></p>
-            {% endif %}
-        </div>
-        <div class="main">
-            {% block content %}{% endblock content %}
-        </div>
+    <h1>FotoBlog</h1>
+    {% if user.is_authenticated %}
+        <p>Salut, {{ user }} !</p>
+        {% if user.profile_photo %}
+            <img class="avatar" src="{{ user.profile_photo.url }}">
+        {% else %}
+            <img class="avatar" src="{% static 'images/default_profile.png'%}">
+        {% endif %}
+        <p><a href="{% url 'home' %}">Accueil</a></p>
+        {% if perms.blog.add_photo %}
+        <p><a href="{% url 'photo_upload' %}">Téléverser une photo</a></p>
+        {% endif %}
+        <p><a href="{% url 'follow_users' %}">Suivre des utilisateurs</a></p>
+        <p><a href="{% url 'create_multiple_photos' %}">Télécharger plusieurs photos</a></p>
+        <p><a href="{% url 'upload_profile_photo' %}">Changer la photo de profil</a></p>
+        <p><a href="{% url 'create_blog' %}">Écrire un billet de blog</a></p>
+        <p><a href="{% url 'logout' %}">Se déconnecter</a></p>
+    {% endif %}
+</div>
+<div class="main">
+    {% block content %}{% endblock content %}
+</div>
 
 
 {% if user.is_authenticated %}

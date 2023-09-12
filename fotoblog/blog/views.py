@@ -21,6 +21,24 @@ def home(request):
     return render(request, 'blog/home.html', context=context)
 
 
+class FollowUsers(LoginRequiredMixin, View):
+    form_class = forms.FollowUsersForm
+    template_name = 'blog/follow_users_form.html'
+
+    def get(self, request):
+        form = self.form_class(instance=request.user)
+        context = {'form': form}
+        return render(request, self.template_name, context=context)
+
+    def post(self, request):
+        form = self.form_class(request.post, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        context = {'form': form}
+        return render(request, self.template_name, context=context)
+
+
 class CreateMultiplePhotos(LoginRequiredMixin, View):
     PhotoFormset = formset_factory(forms.PhotoForm, extra=3)
     formset_class = PhotoFormset
@@ -66,9 +84,9 @@ class BlogAndPhotoUpload(LoginRequiredMixin, View):
             photo.uploader = request.user
             photo.save()
             blog = form_blog.save(commit=False)
-            blog.author = request.user
             blog.photo = photo
             blog.save()
+            blog.contributors.add(request.user, through_defaults={'contribution': 'Auteur principal'})
             return redirect('home')
         context = {
             'form_blog': form_blog,
