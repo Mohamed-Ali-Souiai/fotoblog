@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.forms import formset_factory
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models import Q
 from . import forms
 from . import models
 
@@ -15,13 +16,28 @@ def view_blog(request, blog_id):
 
 @login_required
 def home(request):
-    blogs = models.Blog.objects.all()
-    photos = models.Photo.objects.all()
-    context = {'photos': photos, 'blogs': blogs}
+    # blogs = models.Blog.objects.all()
+    blogs = models.Blog.objects.filter(Q(
+        contributors__in=request.user.follows.all()
+    ) | Q(starred=True)
+                                       )
+    """photos = models.Photo.objects.filter(
+        uploader__in=request.user.follows.all()
+    )"""
+    photos = models.Photo.objects.filter(
+        uploader__in=request.user.follows.all()).exclude(
+            blog__in=blogs
+    )
+    context = {
+        'photos': photos,
+        'blogs': blogs
+    }
     return render(request, 'blog/home.html', context=context)
 
 
 class FollowUsers(LoginRequiredMixin, View):
+    login_url = "/login/"  # LoginRequiredMixin
+    redirect_field_name = "home"  # LoginRequiredMixin
     form_class = forms.FollowUsersForm
     template_name = 'blog/follow_users_form.html'
 
@@ -31,7 +47,7 @@ class FollowUsers(LoginRequiredMixin, View):
         return render(request, self.template_name, context=context)
 
     def post(self, request):
-        form = self.form_class(request.post, instance=request.user)
+        form = self.form_class(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect('home')
@@ -40,6 +56,9 @@ class FollowUsers(LoginRequiredMixin, View):
 
 
 class CreateMultiplePhotos(LoginRequiredMixin, View):
+    login_url = "/login/"  # LoginRequiredMixin
+    redirect_field_name = "home"  # LoginRequiredMixin
+
     PhotoFormset = formset_factory(forms.PhotoForm, extra=3)
     formset_class = PhotoFormset
     template_name = 'blog/create_multiple_photos.html'
@@ -63,6 +82,9 @@ class CreateMultiplePhotos(LoginRequiredMixin, View):
 
 
 class BlogAndPhotoUpload(LoginRequiredMixin, View):
+    login_url = "/login/"  # LoginRequiredMixin
+    redirect_field_name = "home"  # LoginRequiredMixin
+
     form_blog_class = forms.BlogForm
     form_photo_class = forms.PhotoForm
     template_name = 'blog/create_blog_post.html'
@@ -96,6 +118,8 @@ class BlogAndPhotoUpload(LoginRequiredMixin, View):
 
 
 class EditBlog(LoginRequiredMixin, View):
+    login_url = "/login/"  # LoginRequiredMixin
+    redirect_field_name = "home"  # LoginRequiredMixin
 
     edit_form_class = forms.BlogForm
     delete_form_class = forms.DeleteBlogForm
@@ -131,7 +155,10 @@ class EditBlog(LoginRequiredMixin, View):
 
 
 class PhotoUpload(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = ["blog.add_photo"]
+    login_url = "/login/"  # LoginRequiredMixin
+    redirect_field_name = "home"  # LoginRequiredMixin
+
+    permission_required = ["blog.add_photo"]  # PermissionRequiredMixin
     form_class = forms.PhotoForm
     template_name = 'blog/photo_upload.html'
 
