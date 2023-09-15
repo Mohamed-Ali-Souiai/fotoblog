@@ -29,7 +29,8 @@ urlpatterns = [
     path('blog/<int:blog_id>/edit/', blog.views.EditBlog.as_view(), name='edit_blog'),
     path('photo/upload-multiple/', blog.views.CreateMultiplePhotos.as_view(),
          name='create_multiple_photos'),
-    path('follow_users/', blog.views.FollowUsers.as_view(), name='follow_users')
+    path('follow_users/', blog.views.FollowUsers.as_view(), name='follow_users'),
+    path('photo-feed/', blog.views.photo_feed, name='photo_feed'),
 
 ]
 
